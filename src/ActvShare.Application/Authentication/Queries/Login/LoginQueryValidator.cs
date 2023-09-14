@@ -13,11 +13,13 @@ namespace ActvShare.Application.Authentication.Queries.Login
         {
             RuleFor(x => x.Username)
                 .NotEmpty()
-                .MinimumLength(5);
+                .MinimumLength(5)
+                .WithMessage("Invalid Credentials");
             
             RuleFor(x => x.Password)
                 .NotEmpty()
-                .MinimumLength(8);
+                .MinimumLength(8)
+                .WithMessage("Invalid Credentials");
         }
     }
 }

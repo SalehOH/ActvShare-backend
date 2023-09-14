@@ -3,6 +3,7 @@ using ActvShare.Application.Common.Helpers;
 using ActvShare.Application.Common.Interfaces.Authentication;
 using ActvShare.Application.Common.Interfaces.Persistance;
 using ActvShare.Domain.Abstractions;
+using ActvShare.Domain.Common.Errors;
 using ActvShare.Domain.Users;
 using ErrorOr;
 using MediatR;
@@ -24,6 +25,15 @@ public class RegisterCommandHandler: IRequestHandler<RegisterCommand, ErrorOr<Au
 
     public async Task<ErrorOr<AuthenticationResult>> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
+        var isEmailUnique = await _userRepository.IsEmailUniqeAsync(request.Email, cancellationToken);
+        if (!isEmailUnique)
+            return Errors.User.DuplicateEmail;
+    
+        
+        var isUsernameUnique = await _userRepository.IsUsernameUniqeAsync(request.Username, cancellationToken);
+        if (!isUsernameUnique)
+            return Errors.User.DuplicateUsername;
+
 
         var HashedPassword = new PasswordHashing().HashPassword(request.Username, request.Password);
         var user = User.Create(request.Name, request.Username, request.Email, HashedPassword);

@@ -3,6 +3,7 @@ using MediatR;
 using ErrorOr;
 using ActvShare.Application.Common.Interfaces.Persistance;
 using ActvShare.Application.Common.Interfaces.Authentication;
+using ActvShare.Domain.Common.Errors;
 
 namespace ActvShare.Application.Authentication.Queries.Login
 {
@@ -23,13 +24,13 @@ namespace ActvShare.Application.Authentication.Queries.Login
 
             var user = await _userRepository.GetUserByUsernameAsync(request.Username, cancellationToken);
             if (user is null)
-                return Error.Validation("Invalid Email or Password");
+                return Errors.Authentication.InvalidCredentials;
             
             
             var result = new PasswordHashing().VerifyHashedPassword(request.Username, user!.Password, request.Password);
             if (result == 0)
-                return Error.Validation("Invalid Email or Password");
-            
+                return Errors.Authentication.InvalidCredentials;
+
             var token = _jwtTokenGenerator.GenerateToken(user);
             return new AuthenticationResult(
                 user.Name,
