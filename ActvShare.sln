@@ -1,0 +1,66 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34024.191
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{DB1FB096-5060-49F3-AB49-ADE56B64A30E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActvShare.Application", "src\ActvShare.Application\ActvShare.Application.csproj", "{7B34F83B-7E7C-4BBC-BE31-F9B82B590F1E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActvShare.Domain", "src\ActvShare.Domain\ActvShare.Domain.csproj", "{8D7F5502-DFE7-4337-A6F4-896F91908395}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActvShare.Infrastructure", "src\ActvShare.Infrastructure\ActvShare.Infrastructure.csproj", "{7CF0EA5D-E4FD-4DE6-9CA4-5442DC8F0188}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActvShare.WebApi", "src\ActvShare.WebApi\ActvShare.WebApi.csproj", "{C6F681CB-0048-4769-B3B0-10399EDD6896}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{D976BAF2-C953-4738-B860-B1D1A6D0675A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActvShare.Application.Test", "test\ActvShare.Application.Test\ActvShare.Application.Test.csproj", "{D21248CF-EFCA-4DD8-AD0A-0B73548AACFF}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{E0A19855-07F9-4556-B2D7-130CF41F4539}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7B34F83B-7E7C-4BBC-BE31-F9B82B590F1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B34F83B-7E7C-4BBC-BE31-F9B82B590F1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B34F83B-7E7C-4BBC-BE31-F9B82B590F1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B34F83B-7E7C-4BBC-BE31-F9B82B590F1E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D7F5502-DFE7-4337-A6F4-896F91908395}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D7F5502-DFE7-4337-A6F4-896F91908395}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D7F5502-DFE7-4337-A6F4-896F91908395}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D7F5502-DFE7-4337-A6F4-896F91908395}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CF0EA5D-E4FD-4DE6-9CA4-5442DC8F0188}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CF0EA5D-E4FD-4DE6-9CA4-5442DC8F0188}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CF0EA5D-E4FD-4DE6-9CA4-5442DC8F0188}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CF0EA5D-E4FD-4DE6-9CA4-5442DC8F0188}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6F681CB-0048-4769-B3B0-10399EDD6896}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6F681CB-0048-4769-B3B0-10399EDD6896}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6F681CB-0048-4769-B3B0-10399EDD6896}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6F681CB-0048-4769-B3B0-10399EDD6896}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D21248CF-EFCA-4DD8-AD0A-0B73548AACFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D21248CF-EFCA-4DD8-AD0A-0B73548AACFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D21248CF-EFCA-4DD8-AD0A-0B73548AACFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D21248CF-EFCA-4DD8-AD0A-0B73548AACFF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0A19855-07F9-4556-B2D7-130CF41F4539}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0A19855-07F9-4556-B2D7-130CF41F4539}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0A19855-07F9-4556-B2D7-130CF41F4539}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0A19855-07F9-4556-B2D7-130CF41F4539}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7B34F83B-7E7C-4BBC-BE31-F9B82B590F1E} = {DB1FB096-5060-49F3-AB49-ADE56B64A30E}
+		{8D7F5502-DFE7-4337-A6F4-896F91908395} = {DB1FB096-5060-49F3-AB49-ADE56B64A30E}
+		{7CF0EA5D-E4FD-4DE6-9CA4-5442DC8F0188} = {DB1FB096-5060-49F3-AB49-ADE56B64A30E}
+		{C6F681CB-0048-4769-B3B0-10399EDD6896} = {DB1FB096-5060-49F3-AB49-ADE56B64A30E}
+		{D21248CF-EFCA-4DD8-AD0A-0B73548AACFF} = {D976BAF2-C953-4738-B860-B1D1A6D0675A}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {85E08755-F528-4D27-B80D-4A5A277D24DD}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,11 @@
+bin/
+obj/
+/packages/
+riderModule.iml
+/_ReSharper.Caches/
+Infrastructure/Migrations
+*.db
+*.json
+.containers/
+docker-compose*
+.vs*
