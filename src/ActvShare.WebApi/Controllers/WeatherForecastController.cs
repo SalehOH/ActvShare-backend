@@ -1,7 +1,7 @@
 using ActvShare.Application.Authentication.Commands.Register;
 using ActvShare.Application.Authentication.Queries.Login;
 using ActvShare.Application.UserManagement.Commands.Follow;
-using ActvShare.Application.UserManagement.Queries.GetFollowers;
+using ActvShare.Application.UserManagement.Queries.GetFollowings;
 using ActvShare.Application.UserManagement.Queries.GetUser;
 using ActvShare.Domain.Users.ValueObjects;
 using MediatR;
@@ -57,9 +57,9 @@ public class WeatherForecastController : ControllerBase
     }
 
     [HttpGet("/user/followings/{username}")]
-    public async Task<IActionResult> GetFollowings(string username)
+    public async Task<IActionResult> GetFollowings(Guid userId)
     {
-        var result = await _sender.Send(new GetFollowingsQuery(username));
+        var result = await _sender.Send(new GetFollowingsQuery(userId));
         
         return result.Match<IActionResult>(
                 success => Ok(success),

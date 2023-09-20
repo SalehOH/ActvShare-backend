@@ -32,4 +32,10 @@
       <Folder Include="wwwroot\images\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Content Update="wwwroot\images\e5b1e09d-6362-4b68-8542-6200988fa371.png">
+        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
 </Project>

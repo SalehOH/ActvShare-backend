@@ -21,12 +21,14 @@ namespace ActvShare.Application.PostManagement.Commands.CreatePost
         private readonly IPostRepository _postRepository;
         private readonly IUserRepository _userRepository;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ICreateImage _createImage;
 
-        public CreatePostCommandHandler(IPostRepository postRepository, IUserRepository userRepository, IUnitOfWork unitOfWork)
+        public CreatePostCommandHandler(IPostRepository postRepository, IUserRepository userRepository, IUnitOfWork unitOfWork, ICreateImage createImage)
         {
             _postRepository = postRepository;
             _userRepository = userRepository;
             _unitOfWork = unitOfWork;
+            _createImage = createImage;
         }
 
         public async Task<ErrorOr<PostResponse>> Handle(CreatePostCommand request, CancellationToken cancellationToken)
@@ -42,7 +44,7 @@ namespace ActvShare.Application.PostManagement.Commands.CreatePost
 
             if (request.ContentPicture is not null)
             {
-                var postImage = await CreateImage.Create(request.ContentPicture);
+                var postImage = await _createImage.Create(request.ContentPicture);
                 post.AddPostImage(postImage.FileName, postImage.OriginalFileName, postImage.FileSize);
             }
 

@@ -15,12 +15,15 @@ public class RegisterCommandHandler: IRequestHandler<RegisterCommand, ErrorOr<Au
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IJwtTokenGenerator _jwtTokenGenerator;
+    private readonly ICreateImage _createImage;
 
-    public RegisterCommandHandler(IUserRepository userRepository, IUnitOfWork unitOfWork, IJwtTokenGenerator jwtTokenGenerator)
+    public RegisterCommandHandler(IUserRepository userRepository, IUnitOfWork unitOfWork, IJwtTokenGenerator jwtTokenGenerator, ICreateImage createImage)
     {
         _userRepository = userRepository;
         _unitOfWork = unitOfWork;
         _jwtTokenGenerator = jwtTokenGenerator;
+        _createImage = createImage;
+
     }
 
     public async Task<ErrorOr<AuthenticationResult>> Handle(RegisterCommand request, CancellationToken cancellationToken)
@@ -37,7 +40,8 @@ public class RegisterCommandHandler: IRequestHandler<RegisterCommand, ErrorOr<Au
 
         var HashedPassword = new PasswordHashing().HashPassword(request.Username, request.Password);
         var user = User.Create(request.Name, request.Username, request.Email, HashedPassword);
-        var createImage = await CreateImage.Create(request.File);
+
+        var createImage = await _createImage.Create(request.File);
         user.AddProfileImage(createImage.FileName, createImage.OriginalFileName, null, createImage.FileSize);
         
         await _userRepository.AddUserAsync(user, cancellationToken);
