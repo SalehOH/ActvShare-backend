@@ -4,6 +4,7 @@ using ActvShare.Application.PostManagement.Responses;
 using ActvShare.Domain.Abstractions;
 using ActvShare.Domain.Posts.ValueObjects;
 using ActvShare.Domain.Users.ValueObjects;
+using ActvShare.Domain.Common.Errors;
 using ErrorOr;
 using MediatR;
 
@@ -25,13 +26,13 @@ namespace ActvShare.Application.PostManagement.Commands.CreateReply
         {
             var post = await _postRepository.GetPostByIdAsync(PostId.Create(request.PostId), cancellationToken);
             if (post is null)
-                return Error.Validation("Post not found");
+                return Errors.Post.PostNotFound;
 
             var reply = post.AddReply(request.Content, UserId.Create(request.UserId));
             
             var user = await _userRepository.GetUserByIdAsync(reply.UserId, cancellationToken);
             if (user is null)
-                return Error.Validation("User not found");
+                return Errors.User.UserNotFound;
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 

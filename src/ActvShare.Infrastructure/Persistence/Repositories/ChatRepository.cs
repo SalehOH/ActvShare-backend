@@ -20,6 +20,11 @@ namespace ActvShare.Infrastructure.Persistence.Repositories
             await _context.Chats.AddAsync(chat, cancellationToken);
         }
 
+        public Task<bool> ChatExistsAsync(UserId userId, UserId otherUserId, CancellationToken cancellationToken = default)
+        {
+            return _context.Chats.AnyAsync(chat => chat.user1 == userId && chat.user2 == otherUserId, cancellationToken);
+        }
+
         public async Task<List<Chat>> GetAllChatsAsync(UserId userId, CancellationToken cancellationToken = default)
         {
             return await _context.Chats.Where(chat => chat.user1 == userId || chat.user2 == userId)

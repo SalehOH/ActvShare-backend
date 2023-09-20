@@ -2,6 +2,7 @@
 using ActvShare.Application.Common.Responses;
 using ActvShare.Application.PostManagement.Responses;
 using ActvShare.Domain.Posts.ValueObjects;
+using ActvShare.Domain.Common.Errors;
 using ErrorOr;
 using MediatR;
 
@@ -21,10 +22,13 @@ namespace ActvShare.Application.PostManagement.Queries.GetPost
         {
             var post = await _postRepository.GetPostByIdAsync(PostId.Create(request.PostId), cancellationToken);
             if (post is null)
-                return Error.NotFound("Post not found");
+                return Errors.Post.PostNotFound;
             
             var user = await _userRepository.GetUserByIdAsync(post.UserId, cancellationToken);
-            var userResponse = new UserResponse(user!.Name, user.Username, user.ProfileImage.StoredFileName);
+            if (user is null)
+                return Errors.User.UserNotFound;
+
+            var userResponse = new UserResponse(user.Name, user.Username, user.ProfileImage.StoredFileName);
             var postResponse = new PostResponse(post.Id.Value, post.Content, post.PostImage?.StoredFileName, userResponse, post.Likes.Count, post.CreatedAt);
 
             var replies = await Task.WhenAll(post.Replies.Select(async reply =>

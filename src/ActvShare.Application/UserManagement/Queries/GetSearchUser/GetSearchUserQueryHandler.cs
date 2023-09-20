@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ActvShare.Application.Common.Interfaces.Persistance;
 using ActvShare.Application.UserManagement.Responses;
+using ActvShare.Domain.Common.Errors;
 using ErrorOr;
 using MediatR;
 
@@ -25,7 +26,7 @@ namespace ActvShare.Application.UserManagement.Queries.GetSearchUser
 
             if (user == null)
             {
-                return Enumerable.Empty<SearchUserResponse>().ToList();
+                return Errors.User.UserNotFound;
             }
 
             return user.Select(u => 

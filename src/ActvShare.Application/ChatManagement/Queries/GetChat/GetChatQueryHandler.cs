@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using ActvShare.Application.ChatManagement.Responses;
 using ActvShare.Application.Common.Interfaces.Persistance;
 using ActvShare.Domain.Chats.ValueObjects;
+using ActvShare.Domain.Common.Errors;
 using ErrorOr;
 using MediatR;
 
@@ -24,7 +25,7 @@ namespace ActvShare.Application.ChatManagement.Queries.GetChat
         {
             var chat = await _chatRepository.GetChatByIdAsync(ChatId.Create(request.ChatId), cancellationToken);
             if (chat is null)
-                return Error.Failure("Chat not found");
+                return Errors.Chat.ChatNotFound;
 
             var messages = chat.Messages.Select(m => 
                 new MessageResponse(m.Id.Value, m.Content, m.SenderId.Value, m.SentAt)).ToList();

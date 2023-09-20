@@ -2,6 +2,7 @@
 using ActvShare.Domain.Abstractions;
 using ActvShare.Domain.Posts.ValueObjects;
 using ActvShare.Domain.Users.ValueObjects;
+using ActvShare.Domain.Common.Errors;
 using ErrorOr;
 using MediatR;
 
@@ -24,13 +25,23 @@ namespace ActvShare.Application.PostManagement.Commands.LikePost
             var post = await _postRepository.GetPostByIdAsync(PostId.Create(request.UserId), cancellationToken);
             if (post is null)
             {
-                return Error.Validation("Post not found");
+                return Errors.Post.PostNotFound;
             }
             
-            post.AddLike(UserId.Create(request.UserId));
-            var creator = await _userRepository.GetUserByIdAsync(post.UserId, cancellationToken);
+            var isPostLikedSuccessfully = post.AddLike(UserId.Create(request.UserId));
+
+            if (isPostLikedSuccessfully is not true)
+            {
+                return Errors.Post.PostAlreadyLiked;
+            }
             
-            creator!.AddNotification($"your post was liked {post.Content?.Split(' ')[0] ?? ""}");
+            var creator = await _userRepository.GetUserByIdAsync(post.UserId, cancellationToken);
+            if (creator is null)
+            {
+                   return Errors.User.UserNotFound;
+            }
+            
+            creator.AddNotification($"your post was liked {post.Content?.Split(' ')[0] ?? ""}");
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return true;

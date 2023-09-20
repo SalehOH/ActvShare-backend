@@ -9,5 +9,6 @@ namespace ActvShare.Application.Common.Interfaces.Persistance
         Task<Chat?> GetChatByIdAsync(ChatId chatId, CancellationToken cancellationToken = default);
         Task AddChatAsync(Chat chat, CancellationToken cancellationToken = default);
         Task<List<Chat>> GetAllChatsAsync(UserId userId, CancellationToken cancellationToken = default);
+        Task<bool> ChatExistsAsync(UserId userId, UserId otherUserId, CancellationToken cancellationToken = default);
     }
 }

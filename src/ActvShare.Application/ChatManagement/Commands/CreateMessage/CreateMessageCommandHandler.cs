@@ -8,6 +8,7 @@ using ActvShare.Application.Common.Interfaces.Persistance;
 using ActvShare.Domain.Abstractions;
 using ActvShare.Domain.Chats.ValueObjects;
 using ActvShare.Domain.Users.ValueObjects;
+using ActvShare.Domain.Common.Errors;
 using ErrorOr;
 using MediatR;
 
@@ -32,11 +33,10 @@ namespace ActvShare.Application.ChatManagement.Commands.CreateMessage
 
             if (chat is null)
             {
-                return Error.Failure("chat not found");
+                return Errors.Chat.ChatNotFound;
             }
 
             var message = chat.AddMessage(request.Content, UserId.Create(request.SenderId));
-
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return new MessageResponse(message.Id.Value, message.Content, request.SenderId, message.SentAt);

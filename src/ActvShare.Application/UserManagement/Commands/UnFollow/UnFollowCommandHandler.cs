@@ -1,6 +1,7 @@
 ﻿using ActvShare.Application.Common.Interfaces.Persistance;
 using ActvShare.Application.UserManagement.Responses;
 using ActvShare.Domain.Abstractions;
+using ActvShare.Domain.Common.Errors;
 using ErrorOr;
 using MediatR;
 
@@ -22,9 +23,12 @@ namespace ActvShare.Application.UserManagement.Commands.UnFollow
             var user = await _userRepository.GetUserByUsernameAsync(request.Username, cancellationToken);
             
             if (user is null)
-                return Error.Conflict("User not found");
+                return Errors.User.UserNotFound;
 
-            user.UnfollowUser(request.UserId);
+            var isUnfollowedSuccessfully = user.UnfollowUser(request.UserId);
+            if (isUnfollowedSuccessfully is not true)
+                return Errors.User.UserIsNotFollowed;
+
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return new FollowResponse(user.Name, user.Username, user.ProfileImage.StoredFileName);

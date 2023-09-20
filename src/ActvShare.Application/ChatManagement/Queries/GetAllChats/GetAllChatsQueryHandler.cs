@@ -7,6 +7,7 @@ using ActvShare.Application.ChatManagement.Responses;
 using ActvShare.Application.Common.Interfaces.Persistance;
 using ActvShare.Application.Common.Responses;
 using ActvShare.Domain.Users.ValueObjects;
+using ActvShare.Domain.Common.Errors;
 using ErrorOr;
 using MediatR;
 
@@ -26,8 +27,9 @@ namespace ActvShare.Application.ChatManagement.Queries.GetAllChats
         public async Task<ErrorOr<List<ViewChatResponse>>> Handle(GetAllChatsQuery request, CancellationToken cancellationToken)
         {
             var chats = await _chatRepository.GetAllChatsAsync(UserId.Create(request.UserId), cancellationToken);
+            
             if (chats is null)
-                return Error.NotFound("You don't have any chats yet");
+                return Errors.Chat.ChatNotFound;
 
             var viewChats = await Task.WhenAll(chats.Select(async chat =>
             {

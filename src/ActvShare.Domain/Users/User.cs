@@ -44,19 +44,28 @@ public class User: AggregateRoot<UserId, Guid>
         _follows =  new();
     }
     
-    public void FollowUser(UserId followedUserId)
+    public bool FollowUser(UserId followedUserId)
     {
+        if (Follows.Any(x => x.FollowedUserId == followedUserId))
+        {
+            return false;
+        }
+        
         var follow = Follow.Create( followedUserId);
         _follows.Add(follow);
+        
+        return true;
     }
     
-    public void UnfollowUser(UserId followedUserId)
+    public bool UnfollowUser(UserId followedUserId)
     {
-        var follow = _follows.FirstOrDefault(x => x.FollowedUserId == followedUserId);
+        var follow = Follows.FirstOrDefault(x => x.FollowedUserId == followedUserId);
         if (follow is not null)
         {
             _follows.Remove(follow);
+            return true;
         }
+        return false;
     }
     public void AddNotification(string message)
     {

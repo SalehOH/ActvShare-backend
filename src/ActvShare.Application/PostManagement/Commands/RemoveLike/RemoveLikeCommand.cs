@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using ErrorOr;
 using MediatR;
 
-namespace ActvShare.Application.PostManagement.Commands.DislikePost
+namespace ActvShare.Application.PostManagement.Commands.RemoveLike
 {
     public sealed record RemoveLikeCommand(Guid PostId, Guid UserId) : IRequest<ErrorOr<bool>>;
     

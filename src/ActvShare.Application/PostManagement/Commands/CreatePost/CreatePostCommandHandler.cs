@@ -10,6 +10,7 @@ using ActvShare.Application.PostManagement.Responses;
 using ActvShare.Domain.Abstractions;
 using ActvShare.Domain.Posts;
 using ActvShare.Domain.Users.ValueObjects;
+using ActvShare.Domain.Common.Errors;
 using ErrorOr;
 using MediatR;
 
@@ -33,7 +34,7 @@ namespace ActvShare.Application.PostManagement.Commands.CreatePost
             var user = await _userRepository.GetUserByIdAsync(UserId.Create(request.UserId), cancellationToken);
             if (user is null)
             {
-                return Error.Validation("User not found");
+                return Errors.User.UserNotFound;
             }
 
             var post = Post.Create(UserId.Create(user.Id.Value), request.Content);

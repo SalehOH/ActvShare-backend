@@ -57,19 +57,30 @@ public class Post : AggregateRoot<PostId, Guid>
         return reply;
     }
     
-    public void AddLike(UserId userId)
+    public bool AddLike(UserId userId)
     {
+        var wasLiked = _likes.Any(x => x.UserId == userId);
+        if (wasLiked)
+        {
+            return false;
+        }
+        
         var like = Like.Create(userId);
         _likes.Add(like);
+
+        return true;
     }
     
-    public void RemoveLike(UserId userId)
+    public bool RemoveLike(UserId userId)
     {
         var like = _likes.FirstOrDefault(x => x.UserId == userId);
         if (like is not null)
         {
             _likes.Remove(like);
+            return true;
         }
+
+        return false;
     }
 
     private Post() { }

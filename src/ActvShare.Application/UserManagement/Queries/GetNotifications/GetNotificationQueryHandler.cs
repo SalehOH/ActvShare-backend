@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using ActvShare.Application.Common.Interfaces.Persistance;
 using ActvShare.Application.UserManagement.Responses;
 using ActvShare.Domain.Users.ValueObjects;
+using ActvShare.Domain.Common.Errors;
 using ErrorOr;
 using MediatR;
 
@@ -23,11 +24,15 @@ namespace ActvShare.Application.UserManagement.Queries.GetNotifications
         public async Task<ErrorOr<List<NotificationResponse>>> Handle(GetNotificationQuery request, CancellationToken cancellationToken)
         {
             var user = await _userRepository.GetUserByIdAsync(UserId.Create(request.UserId), cancellationToken);
-            if(user is null)
+            if (user is null)
             {
-                return Error.NotFound("User not found");
+                return Errors.User.UserNotFound;
             }
-
+            
+            if (user.Notifications is null || user.Notifications.Any() is not true)
+                return Errors.User.NoNotificationsFound;
+            
+            
             var notifications = user.Notifications
                 .Select(n => 
                     new NotificationResponse(n.Id.Value, n.Message, n.IsRead, n.CreatedAt))

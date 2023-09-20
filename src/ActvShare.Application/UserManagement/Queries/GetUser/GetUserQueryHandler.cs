@@ -1,5 +1,6 @@
 using ActvShare.Application.Common.Interfaces.Persistance;
 using ActvShare.Domain.Users;
+using ActvShare.Domain.Common.Errors;
 using ErrorOr;
 using MediatR;
 
@@ -17,7 +18,7 @@ public class GetUserQueryHandler: IRequestHandler<GetUserQuery, ErrorOr<User>>
         var user = await _userRepository.GetUserByUsernameAsync(request.Username, cancellationToken);
         if (user is null)
         {
-            return Error.NotFound();
+            return Errors.User.UserNotFound;
         }
         return user;
     }

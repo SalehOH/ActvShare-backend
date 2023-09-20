@@ -1,6 +1,7 @@
 ﻿using ActvShare.Application.Common.Interfaces.Persistance;
-using ActvShare.Application.UserManagement.Queries.GetFollowers;
 using ActvShare.Application.UserManagement.Responses;
+using ActvShare.Domain.Common.Errors;
+using ActvShare.Domain.Users.ValueObjects;
 using ErrorOr;
 using MediatR;
 
@@ -17,16 +18,16 @@ namespace ActvShare.Application.UserManagement.Queries.GetFollowings
 
         public async Task<ErrorOr<List<FollowResponse>>> Handle(GetFollowingsQuery request, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetUserByUsernameAsync(request.Username, cancellationToken);
+            var user = await _userRepository.GetUserByIdAsync(UserId.Create(request.UserId), cancellationToken);
 
             if (user is null)
-                return Error.NotFound("User not found");
+                return Errors.User.UserNotFound;
 
             var followings = user.Follows;
 
-            if (followings is null || !followings.Any())
+            if (followings is null || followings.Any() is not true)
             {
-                return Error.NotFound("Followings not found");
+                return Errors.User.NoFollowersFound;
             }
 
             var followResponses = await Task.WhenAll(followings.Select(async following =>

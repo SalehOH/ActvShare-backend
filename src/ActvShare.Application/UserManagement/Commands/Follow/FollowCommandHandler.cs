@@ -23,9 +23,15 @@ public class FollowCommandHandler: IRequestHandler<FollowCommand, ErrorOr<Follow
         var user = await _userRepository.GetUserByUsernameAsync(request.Username, cancellationToken);
         if (user is null)
         {
-            return Errors.User.DuplicateEmail;
+            return Errors.User.UserNotFound;
         }
-        user.FollowUser(request.UserId);
+
+        var isFollowedSuccessfully = user.FollowUser(request.UserId);
+        if (isFollowedSuccessfully is not true)
+        {
+            return Errors.User.UserIsAlreadyFollowed;
+        }
+
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return new FollowResponse(user.Name, user.Username, user.ProfileImage.StoredFileName);

@@ -1,8 +1,8 @@
 ﻿using ActvShare.Application.Common.Interfaces.Persistance;
-using ActvShare.Application.PostManagement.Commands.DislikePost;
 using ActvShare.Domain.Abstractions;
 using ActvShare.Domain.Posts.ValueObjects;
 using ActvShare.Domain.Users.ValueObjects;
+using ActvShare.Domain.Common.Errors;
 using ErrorOr;
 using MediatR;
 
@@ -21,12 +21,18 @@ namespace ActvShare.Application.PostManagement.Commands.RemoveLike
         public async Task<ErrorOr<bool>> Handle(RemoveLikeCommand request, CancellationToken cancellationToken)
         {
             var post = await _postRepository.GetPostByIdAsync(PostId.Create(request.UserId), cancellationToken);
+            
             if (post is null)
             {
-                return Error.Validation("Post not found");
+                return Errors.Post.PostNotFound;
             }
 
-            post.RemoveLike(UserId.Create(request.UserId));
+            var isLikeRemovedSuccessfully = post.RemoveLike(UserId.Create(request.UserId));
+            if (isLikeRemovedSuccessfully)
+            {
+                return Errors.Post.PostNotLiked;
+            }
+            
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return true;

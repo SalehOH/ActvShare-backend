@@ -33,5 +33,9 @@ public static partial class Errors
         public static Error NoNotificationsFound => Error.NotFound(
             code: "User.NoNotificationsFound",
             description: "No notifications found.");
+
+        public static Error NoFollowersFound => Error.NotFound(
+            code: "User.NoFollowersFound",
+            description: "No followers found.");
     }
 }

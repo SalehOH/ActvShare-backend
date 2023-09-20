@@ -1,6 +1,7 @@
 ﻿using ActvShare.Application.Common.Interfaces.Persistance;
 using ActvShare.Application.Common.Responses;
 using ActvShare.Application.PostManagement.Responses;
+using ActvShare.Domain.Common.Errors;
 using ErrorOr;
 using MediatR;
 
@@ -22,7 +23,7 @@ namespace ActvShare.Application.PostManagement.Queries.GetPosts
             var posts = await _postRepository.GetAllPostsAsync(cancellationToken);
             
             if ( posts is null )
-                return Error.NotFound("Posts not found");
+                return Errors.Post.PostNotFound;
 
             var userIds = posts.Select(post => post.UserId).Distinct().ToList();
             var users = await _userRepository.GetUsersByIdsAsync(userIds, cancellationToken);
@@ -30,7 +31,7 @@ namespace ActvShare.Application.PostManagement.Queries.GetPosts
             var postResponses = posts.Select(post =>
             {
                 var postCreator = users.FirstOrDefault(user => user.Id == post.UserId);
-
+                
                 var createrResponse = new UserResponse(
                     postCreator!.Name,
                     postCreator.Username,
