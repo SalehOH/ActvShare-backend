@@ -17,8 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{D976BAF2-C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActvShare.Application.Test", "test\ActvShare.Application.Test\ActvShare.Application.Test.csproj", "{D21248CF-EFCA-4DD8-AD0A-0B73548AACFF}"
 EndProject
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{E0A19855-07F9-4556-B2D7-130CF41F4539}"
-EndProject
+
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
