@@ -26,4 +26,4 @@ jobs:
       run: dotnet build ./ActvShare.sln -c Release --no-restore --property WarningLevel=0
     
     - name: Test
-      run: dotnet test ./ActvShare.sln --no-build --verbosity normal --no-restore
+      run: dotnet test ./ActvShare.sln --no-restore --verbosity normal
