@@ -20,7 +20,7 @@ jobs:
         dotnet-version: '7.0.x'
     
     - name: Restore dependencies
-      run: dotnet restore .\ActvShare.sln
+      run: dotnet restore .ActvShare.sln
     
     - name: Build
       run: dotnet build -c Release --no-restore
