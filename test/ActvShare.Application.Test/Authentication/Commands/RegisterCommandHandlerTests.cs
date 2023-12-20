@@ -14,9 +14,7 @@ using ActvShare.Domain.Abstractions;
 using ActvShare.Domain.Common.Errors;
 using ActvShare.Domain.Users;
 using ErrorOr;
-using FluentAssertions;
 using Microsoft.AspNetCore.Http;
-using Moq;
 
 namespace ActvShare.Application.Test.Authentication.Commands
 {
@@ -36,7 +34,7 @@ namespace ActvShare.Application.Test.Authentication.Commands
         }
 
         [Fact]
-        public async Task Handle_Should_ReturnAuthenticationError_WhenEmailIsNotUnique()
+        public async Task Handle_Should_ReturnAuthenticationError_When_EmailIsNotUnique()
         {
             // Arrange
             var command = new RegisterCommand("Test User", "tester", "example@test.com", "Test1234!", "Test1234!",  PictureMock.GetPicture());
@@ -58,7 +56,7 @@ namespace ActvShare.Application.Test.Authentication.Commands
         }
 
         [Fact]
-        public async Task Handle_Should_ReturnAuthenticationError_WhenUsernameIsNotUnique()
+        public async Task Handle_Should_ReturnAuthenticationError_When_UsernameIsNotUnique()
         {
             // Arrange
             var command = new RegisterCommand("Test User", "tester", "example@test.com", "Test1234!", "Test1234!", PictureMock.GetPicture());
@@ -82,7 +80,7 @@ namespace ActvShare.Application.Test.Authentication.Commands
         }
 
         [Fact]
-        public async Task Handle_Should_ReturnAuthenticationResponse_WhenEmailAndUsernameAreUnique()
+        public async Task Handle_Should_ReturnAuthenticationResponse_When_EmailAndUsernameAreUnique()
         {
             // Arrange
             var command = new RegisterCommand("Test User", "tester", "example@test.com", "Test1234!", "Test1234!", PictureMock.GetPicture());
@@ -103,7 +101,7 @@ namespace ActvShare.Application.Test.Authentication.Commands
             result.Value.Should().BeOfType<AuthenticationResult>();
         }
         [Fact]
-        public async Task Handle_Should_CallAddUserAsync_WhenEmailAndUsernameAreUnique()
+        public async Task Handle_Should_CallAddUserAsync_When_EmailAndUsernameAreUnique()
         {
             // Arrange
             var command = new RegisterCommand("Test User", "tester", "example@test.com", "Test1234!", "Test1234!", PictureMock.GetPicture());
@@ -126,7 +124,7 @@ namespace ActvShare.Application.Test.Authentication.Commands
                 Times.Once);
         }
         [Fact]
-        public async Task Handle_Should_NotCallUnitOfWork_WhenEmailOrUsernameAreNotUnique()
+        public async Task Handle_Should_NotCallUnitOfWork_When_EmailOrUsernameAreNotUnique()
         {
             // Arrange
             var command = new RegisterCommand("Test User", "tester", "example@test.com", "Test1234!", "Test1234!", PictureMock.GetPicture());
