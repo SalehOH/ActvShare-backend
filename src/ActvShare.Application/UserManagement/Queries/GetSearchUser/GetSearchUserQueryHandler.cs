@@ -24,7 +24,7 @@ namespace ActvShare.Application.UserManagement.Queries.GetSearchUser
         {
             var user = await _userRepository.GetSearchedUserAsync(request.SerachUsername, cancellationToken);
 
-            if (user == null)
+            if (user.Count == 0)
             {
                 return Errors.User.UserNotFound;
             }
