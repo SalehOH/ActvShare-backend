@@ -4,8 +4,10 @@ obj/
 riderModule.iml
 /_ReSharper.Caches/
 Infrastructure/Migrations
-*.db
+**.db*
 *.json
 .containers/
 docker-compose*
 .vs*
+images/
+.DS_Store
