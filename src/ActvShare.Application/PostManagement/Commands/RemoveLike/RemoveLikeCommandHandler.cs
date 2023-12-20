@@ -28,7 +28,7 @@ namespace ActvShare.Application.PostManagement.Commands.RemoveLike
             }
 
             var isLikeRemovedSuccessfully = post.RemoveLike(UserId.Create(request.UserId));
-            if (isLikeRemovedSuccessfully)
+            if (isLikeRemovedSuccessfully is not true)
             {
                 return Errors.Post.PostNotLiked;
             }

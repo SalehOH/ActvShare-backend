@@ -22,7 +22,7 @@ namespace ActvShare.Application.PostManagement.Queries.GetPosts
         {
             var posts = await _postRepository.GetAllPostsAsync(cancellationToken);
             
-            if ( posts is null )
+            if ( posts.Any() is not true )
                 return Errors.Post.PostNotFound;
 
             var userIds = posts.Select(post => post.UserId).Distinct().ToList();
