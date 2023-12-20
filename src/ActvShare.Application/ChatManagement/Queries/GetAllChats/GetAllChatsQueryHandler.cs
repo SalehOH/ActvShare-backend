@@ -28,7 +28,7 @@ namespace ActvShare.Application.ChatManagement.Queries.GetAllChats
         {
             var chats = await _chatRepository.GetAllChatsAsync(UserId.Create(request.UserId), cancellationToken);
             
-            if (chats is null)
+            if (chats.Any() is not true)
                 return Errors.Chat.ChatNotFound;
 
             var viewChats = await Task.WhenAll(chats.Select(async chat =>

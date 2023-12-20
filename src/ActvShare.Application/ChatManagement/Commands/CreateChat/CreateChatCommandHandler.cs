@@ -27,7 +27,7 @@ namespace ActvShare.Application.ChatManagement.Commands.CreateChat
         public async Task<ErrorOr<bool>> Handle(CreateChatCommand request, CancellationToken cancellationToken)
         {
             var chatExists = await _chatRepository.ChatExistsAsync(UserId.Create(request.UserId), UserId.Create(request.OtherUserId), cancellationToken);
-            if (chatExists is not true)
+            if (chatExists)
             {
                 return Errors.Chat.ChatAlreadyExists;
             }
