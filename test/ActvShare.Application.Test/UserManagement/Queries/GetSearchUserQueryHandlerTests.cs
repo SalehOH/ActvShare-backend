@@ -12,22 +12,24 @@ namespace ActvShare.Application.Test.UserManagement.Queries;
 public class GetSearchUserQueryHandlerTests
 {
     private readonly Mock<IUserRepository> _userRepositoryMock;
+    private readonly Mock<IChatRepository> _chatRepositoryMock;
     private readonly GetSearchUserQueryHandler _handler;
 
     public GetSearchUserQueryHandlerTests()
     {
         _userRepositoryMock = new Mock<IUserRepository>();
-        _handler = new GetSearchUserQueryHandler(_userRepositoryMock.Object);
+        _chatRepositoryMock = new Mock<IChatRepository>();
+        _handler = new GetSearchUserQueryHandler(_userRepositoryMock.Object, _chatRepositoryMock.Object);
     }
 
     [Fact]
     public async Task Handle_Should_ReturnUserNotFoundError_When_UserNotFound()
     {
         // Arrange
-        var query = new GetSearchUserQuery("test");
-       _userRepositoryMock.Setup(
-            x => x.GetSearchedUserAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                  .ReturnsAsync(new List<User>());
+        var query = new GetSearchUserQuery(Guid.Empty, "test");
+        _userRepositoryMock.Setup(
+             x => x.GetSearchedUserAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                   .ReturnsAsync(new List<User>());
 
 
         // Act
@@ -42,7 +44,7 @@ public class GetSearchUserQueryHandlerTests
     public async Task Handle_Should_ReturnSearchUserResponseList_When_UserFound()
     {
         // Arrange
-        var query = new GetSearchUserQuery("john");
+        var query = new GetSearchUserQuery(Guid.NewGuid(),"john");
         var user = DummyUser.GetDummyUser();
 
         _userRepositoryMock.Setup(

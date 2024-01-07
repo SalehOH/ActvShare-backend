@@ -23,13 +23,14 @@ namespace ActvShare.Application.PostManagement.Queries.GetPost
             var post = await _postRepository.GetPostByIdAsync(PostId.Create(request.PostId), cancellationToken);
             if (post is null)
                 return Errors.Post.PostNotFound;
-            
+
             var user = await _userRepository.GetUserByIdAsync(post.UserId, cancellationToken);
             if (user is null)
                 return Errors.User.UserNotFound;
 
             var userResponse = new UserResponse(user.Name, user.Username, user.ProfileImage.StoredFileName);
-            var postResponse = new PostResponse(post.Id.Value, post.Content, post.PostImage?.StoredFileName, userResponse, post.Likes.Count, post.CreatedAt);
+            var isLiked = request.UserId.HasValue ? post.Likes.Any(like => like.UserId?.Value == request.UserId.Value) : false;
+            var postResponse = new PostResponse(post.Id.Value, post.Content, post.PostImage?.StoredFileName, userResponse, isLiked, post.Likes.Count, post.CreatedAt);
 
             var replies = await Task.WhenAll(post.Replies.Select(async reply =>
             {

@@ -20,7 +20,7 @@ namespace ActvShare.Application.PostManagement.Commands.RemoveLike
         }
         public async Task<ErrorOr<bool>> Handle(RemoveLikeCommand request, CancellationToken cancellationToken)
         {
-            var post = await _postRepository.GetPostByIdAsync(PostId.Create(request.UserId), cancellationToken);
+            var post = await _postRepository.GetPostByIdAsync(PostId.Create(request.PostId), cancellationToken);
             
             if (post is null)
             {

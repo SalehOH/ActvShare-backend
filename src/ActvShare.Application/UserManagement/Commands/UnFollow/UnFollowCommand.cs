@@ -5,5 +5,5 @@ using MediatR;
 
 namespace ActvShare.Application.UserManagement.Commands.UnFollow
 {
-    public record UnFollowCommand(string Username, UserId UserId) : IRequest<ErrorOr<FollowResponse>>;
+    public record UnFollowCommand(string Username, UserId UserId) : IRequest<ErrorOr<bool>>;
 }

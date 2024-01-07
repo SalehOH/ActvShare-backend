@@ -1,31 +1,31 @@
 using ActvShare.Application.Test.Common;
 using ActvShare.Application.UserManagement.Commands.UnFollow;
 using ActvShare.Domain.Common.Errors;
-using ActvShare.Application.UserManagement.Responses;
+using ActvShare.Domain.Users.ValueObjects;
 
 namespace ActvShare.Application.Test.UserManagement.Commands;
 public class UnFollowCommandHandlerTests : Base
 {
+    private readonly UnFollowCommandHandler _handler;
     public UnFollowCommandHandlerTests() : base()
     {
+        _handler = new UnFollowCommandHandler(_userRepositoryMock.Object, _unitOfWorkMock.Object);
     }
 
     [Fact]
     public async Task Handle_Should_ReturnsUserIsNotFollowedError_WhenUserIsNotFollowed()
     {
         // Arrange
-        var command = new UnFollowCommand (Username: "test", UserId: _userId );
-        
         var user = DummyUser.GetDummyUser();
-        
-        _userRepositoryMock.Setup(
-            x => x.GetUserByUsernameAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(user);
+        var unfollowedUser = DummyUser.CreateUser("janedoe");
 
-        var handler = new UnFollowCommandHandler(_userRepositoryMock.Object, _unitOfWorkMock.Object);
+        var userId = UserId.Create(user.Id.Value);
+        var command = new UnFollowCommand(Username: unfollowedUser.Username, UserId: userId);
+
+        SetupUserRepositoryMock(user, unfollowedUser);
         
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -36,21 +36,20 @@ public class UnFollowCommandHandlerTests : Base
     public async Task Handle_Should_ReturnsFollowResponse_WhenUserIsUnFollowedSuccessfully()
     {
         // Arrange
-        var command = new UnFollowCommand (Username: "test", UserId: _userId );
         var user = DummyUser.GetDummyUser();
-        user.FollowUser(command.UserId);
+        var unfollowedUser = DummyUser.CreateUser("janedoe");
 
-        _userRepositoryMock.Setup(x => x.GetUserByUsernameAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(user);
+        var userId = UserId.Create(user.Id.Value);
+        var command = new UnFollowCommand(Username: unfollowedUser.Username, UserId: userId);
+        user.FollowUser(UserId.Create(unfollowedUser.Id.Value));
 
-        var handler = new UnFollowCommandHandler(_userRepositoryMock.Object, _unitOfWorkMock.Object);
-        
+        SetupUserRepositoryMock(user, unfollowedUser);
+
         // Act
-        var result = await handler.Handle(command, CancellationToken.None);
+        var result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeFalse();
-        result.Value.Should().BeOfType<FollowResponse>();
-        result.Value.Name.Should().Be(user.Name);
-        result.Value.Username.Should().Be(user.Username);
+        result.Value.Should().BeTrue();
     }
 }

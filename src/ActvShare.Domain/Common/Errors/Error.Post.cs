@@ -13,16 +13,15 @@ namespace ActvShare.Domain.Common.Errors
         {
             public static Error PostNotFound => Error.NotFound(
                 code: "Post.NotFound",
-                description: "Post not found."); 
+                description: "Post not found.");
 
-            public static Error PostNotLiked => Error.Custom(
-                400,
+            public static Error PostNotLiked => Error.Failure(
                 code: "Post.NotLiked",
                 description: "Post not liked by user.");
 
             public static Error PostAlreadyLiked => Error.Conflict(
                 code: "Post.AlreadyLiked",
-                description: "Post already liked by user.");             
+                description: "Post already liked by user.");
 
             public static Error PostAlreadyUnshared => Error.Conflict(
                 code: "Post.AlreadyUnshared",

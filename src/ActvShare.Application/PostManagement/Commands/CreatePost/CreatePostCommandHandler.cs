@@ -57,10 +57,11 @@ namespace ActvShare.Application.PostManagement.Commands.CreatePost
                 post.Content,
                 post.PostImage?.StoredFileName,
                 userInfo,
+                true,
                 post.Likes.Count,
                 post.CreatedAt
                 );
-           
+
         }
     }
 }

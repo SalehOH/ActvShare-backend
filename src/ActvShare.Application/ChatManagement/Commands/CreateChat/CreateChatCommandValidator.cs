@@ -12,7 +12,7 @@ namespace ActvShare.Application.ChatManagement.Commands.CreateChat
         public CreateChatCommandValidator()
         {
             RuleFor(x => x.UserId).NotEmpty();
-            RuleFor(x => x.OtherUserId).NotEmpty();
+            RuleFor(x => x.OtherUser).NotEmpty();
         }
     }
 }

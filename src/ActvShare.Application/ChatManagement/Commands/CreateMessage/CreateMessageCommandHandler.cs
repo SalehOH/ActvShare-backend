@@ -19,11 +19,13 @@ namespace ActvShare.Application.ChatManagement.Commands.CreateMessage
     {
         private readonly IChatRepository _chatRepository;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IUserRepository _userRepository;
 
 
-        public CreateMessageCommandHandler(IChatRepository chatRepository, IUnitOfWork unitOfWork)
+        public CreateMessageCommandHandler(IChatRepository chatRepository, IUserRepository userRepository, IUnitOfWork unitOfWork)
         {
             _chatRepository = chatRepository;
+            _userRepository = userRepository;
             _unitOfWork = unitOfWork;
         }
        
@@ -39,7 +41,8 @@ namespace ActvShare.Application.ChatManagement.Commands.CreateMessage
             var message = chat.AddMessage(request.Content, UserId.Create(request.SenderId));
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return new MessageResponse(message.Id.Value, message.Content, request.SenderId, message.SentAt);
+            var user = await _userRepository.GetUserByIdAsync(UserId.Create(message.SenderId.Value), cancellationToken);
+            return new MessageResponse(message.Id.Value, message.Content, user!.Username , message.SentAt);
         }
     }
 }

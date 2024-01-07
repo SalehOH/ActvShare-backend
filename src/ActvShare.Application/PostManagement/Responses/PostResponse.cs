@@ -8,10 +8,11 @@ using ActvShare.Application.Common.Responses;
 namespace ActvShare.Application.PostManagement.Responses
 {
     public record PostResponse(
-        Guid Id, 
-        string? Content, 
+        Guid Id,
+        string? Content,
         string? ContentPicture,
         UserResponse UserResponse,
+        bool IsLiked,
         int LikesCount,
         DateTime CreatedAt
         );

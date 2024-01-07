@@ -12,12 +12,14 @@ namespace ActvShare.Application.Test.UserManagement.Queries;
 public class GetFollowingsQueryHandlerTests
 {
     private readonly Mock<IUserRepository> _userRepositoryMock;
+    private readonly Mock<IChatRepository> _chatRepositoryMock;
     private readonly GetFollowingsQueryHandler _handler;
 
     public GetFollowingsQueryHandlerTests()
     {
         _userRepositoryMock = new Mock<IUserRepository>();
-        _handler = new GetFollowingsQueryHandler(_userRepositoryMock.Object);
+        _chatRepositoryMock = new Mock<IChatRepository>();
+        _handler = new GetFollowingsQueryHandler(_userRepositoryMock.Object, _chatRepositoryMock.Object);
     }
 
     [Fact]

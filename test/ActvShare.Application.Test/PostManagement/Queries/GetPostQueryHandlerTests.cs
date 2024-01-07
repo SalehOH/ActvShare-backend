@@ -28,11 +28,11 @@ public class GetPostQueryHandlerTests
     public async Task Handle_Should_ReturnPostNotFoundError_When_PostNotFound()
     {
         // Arrange
-        var query = new GetPostQuery(UserId.CreateUnique().Value);
-        
+        var query = new GetPostQuery(PostId.CreateUnique().Value, UserId.CreateUnique().Value);
+
         _postRepositoryMock.Setup(
             x => x.GetPostByIdAsync(It.IsAny<PostId>(), It.IsAny<CancellationToken>()))
-                  .ReturnsAsync(default (Post));
+                  .ReturnsAsync(default(Post));
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
@@ -46,16 +46,16 @@ public class GetPostQueryHandlerTests
     public async Task Handle_Should_ReturnUserNotFoundError_When_UserNotFound()
     {
         // Arrange
-        var query = new GetPostQuery(UserId.CreateUnique().Value);
+        var query = new GetPostQuery(PostId.CreateUnique().Value, UserId.CreateUnique().Value);
 
         var post = Post.Create(UserId.CreateUnique(), "content");
         _postRepositoryMock.Setup(
             x => x.GetPostByIdAsync(It.IsAny<PostId>(), It.IsAny<CancellationToken>()))
                   .ReturnsAsync(post);
-        
+
         _userRepositoryMock.Setup(
             x => x.GetUserByIdAsync(It.IsAny<UserId>(), It.IsAny<CancellationToken>()))
-                  .ReturnsAsync(default (User));
+                  .ReturnsAsync(default(User));
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
@@ -78,12 +78,12 @@ public class GetPostQueryHandlerTests
         post.AddReply(replyContent, UserId.CreateUnique());
         post.AddReply(replyContent + 2, UserId.CreateUnique());
 
-        var query = new GetPostQuery(post.Id.Value);
-        
+        var query = new GetPostQuery(PostId.CreateUnique().Value, UserId.CreateUnique().Value);
+
         _postRepositoryMock.Setup(
             x => x.GetPostByIdAsync(It.IsAny<PostId>(), It.IsAny<CancellationToken>()))
                   .ReturnsAsync(post);
-        
+
         _userRepositoryMock.Setup(
             x => x.GetUserByIdAsync(It.IsAny<UserId>(), It.IsAny<CancellationToken>()))
                   .ReturnsAsync(user);

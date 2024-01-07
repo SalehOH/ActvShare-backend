@@ -2,6 +2,7 @@ using ActvShare.Application.Common.Interfaces.Persistance;
 using ActvShare.Application.UserManagement.Responses;
 using ActvShare.Domain.Abstractions;
 using ActvShare.Domain.Common.Errors;
+using ActvShare.Domain.Users.ValueObjects;
 using ErrorOr;
 using MediatR;
 
@@ -20,13 +21,20 @@ public class FollowCommandHandler: IRequestHandler<FollowCommand, ErrorOr<Follow
 
     public async Task<ErrorOr<FollowResponse>> Handle(FollowCommand request, CancellationToken cancellationToken)
     {
-        var user = await _userRepository.GetUserByUsernameAsync(request.Username, cancellationToken);
+        var followedUser = await _userRepository.GetUserByUsernameAsync(request.Username, cancellationToken);
+        if (followedUser is null)
+        {
+            return Errors.User.UserNotFound;
+        }
+        
+        var user = await _userRepository.GetUserByIdAsync(request.UserId, cancellationToken);
         if (user is null)
         {
             return Errors.User.UserNotFound;
         }
+        
+        var isFollowedSuccessfully = user.FollowUser(UserId.Create(followedUser.Id.Value));
 
-        var isFollowedSuccessfully = user.FollowUser(request.UserId);
         if (isFollowedSuccessfully is not true)
         {
             return Errors.User.UserIsAlreadyFollowed;
@@ -34,6 +42,6 @@ public class FollowCommandHandler: IRequestHandler<FollowCommand, ErrorOr<Follow
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return new FollowResponse(user.Name, user.Username, user.ProfileImage.StoredFileName);
+        return new FollowResponse(followedUser.Name, followedUser.Username, followedUser.ProfileImage.StoredFileName, false);
     }
 }

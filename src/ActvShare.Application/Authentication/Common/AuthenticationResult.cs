@@ -1,5 +1,3 @@
-using ActvShare.Domain.Users;
-
 namespace ActvShare.Application.Authentication.Common;
 
 public record AuthenticationResult(

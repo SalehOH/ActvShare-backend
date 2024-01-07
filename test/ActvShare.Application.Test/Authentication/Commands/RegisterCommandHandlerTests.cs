@@ -23,32 +23,37 @@ namespace ActvShare.Application.Test.Authentication.Commands
         private readonly Mock<IUserRepository> _userRepositoryMock;
         private readonly Mock<IUnitOfWork> _unitOfWorkMock;
         private readonly Mock<IJwtTokenGenerator> _jwtTokenGeneratorMock;
+        private readonly Mock<IRefreshTokenGenerator> _refreshTokenGeneratorMock;
         private readonly Mock<ICreateImage> _createImageMock;
+        private readonly RegisterCommandHandler _handler;
 
         public RegisterCommandHandlerTests()
         {
             _userRepositoryMock = new Mock<IUserRepository>();
             _unitOfWorkMock = new Mock<IUnitOfWork>();
             _jwtTokenGeneratorMock = new Mock<IJwtTokenGenerator>();
+            _refreshTokenGeneratorMock = new Mock<IRefreshTokenGenerator>();
             _createImageMock = new Mock<ICreateImage>();
+            
+            _handler = new RegisterCommandHandler(
+                _userRepositoryMock.Object,
+                _unitOfWorkMock.Object,
+                _jwtTokenGeneratorMock.Object,
+                _createImageMock.Object,
+                _refreshTokenGeneratorMock.Object);
         }
 
         [Fact]
         public async Task Handle_Should_ReturnAuthenticationError_When_EmailIsNotUnique()
         {
             // Arrange
-            var command = new RegisterCommand("Test User", "tester", "example@test.com", "Test1234!", "Test1234!",  PictureMock.GetPicture());
+            var command = new RegisterCommand("Test User", "tester", "example@test.com", "Test1234!", "Test1234!", PictureMock.GetPicture());
 
             SetupMock(isEmailUnique: false, isUsernameUnique: true);
 
-            var handler = new RegisterCommandHandler(
-                _userRepositoryMock.Object,
-                _unitOfWorkMock.Object, 
-                _jwtTokenGeneratorMock.Object,
-                _createImageMock.Object);
-            
+
             // Act
-            ErrorOr<AuthenticationResult> result = await handler.Handle(command, default);
+            var result = await _handler.Handle(command, default);
 
             // Assert
             result.IsError.Should().BeTrue();
@@ -64,15 +69,8 @@ namespace ActvShare.Application.Test.Authentication.Commands
             SetupMock(isEmailUnique: true, isUsernameUnique: false);
 
 
-
-            var handler = new RegisterCommandHandler(
-                _userRepositoryMock.Object,
-                _unitOfWorkMock.Object,
-                _jwtTokenGeneratorMock.Object,
-                _createImageMock.Object);
-
             // Act
-            ErrorOr<AuthenticationResult> result = await handler.Handle(command, default);
+            var result = await _handler.Handle(command, default);
 
             // Assert
             result.IsError.Should().BeTrue();
@@ -85,20 +83,14 @@ namespace ActvShare.Application.Test.Authentication.Commands
             // Arrange
             var command = new RegisterCommand("Test User", "tester", "example@test.com", "Test1234!", "Test1234!", PictureMock.GetPicture());
 
-            var handler = new RegisterCommandHandler(
-                _userRepositoryMock.Object,
-                _unitOfWorkMock.Object,
-                _jwtTokenGeneratorMock.Object,
-                _createImageMock.Object);
-            
-            SetupMock(isEmailUnique:true, isUsernameUnique:true);
-            
+            SetupMock(isEmailUnique: true, isUsernameUnique: true);
+
             // Act
-            ErrorOr<AuthenticationResult> result = await handler.Handle(command, default);
+            var result = await _handler.Handle(command, default);
 
             // Assert
             result.IsError.Should().BeFalse();
-            result.Value.Should().BeOfType<AuthenticationResult>();
+            result.Value.user.Should().BeOfType<AuthenticationResult>();
         }
         [Fact]
         public async Task Handle_Should_CallAddUserAsync_When_EmailAndUsernameAreUnique()
@@ -106,20 +98,14 @@ namespace ActvShare.Application.Test.Authentication.Commands
             // Arrange
             var command = new RegisterCommand("Test User", "tester", "example@test.com", "Test1234!", "Test1234!", PictureMock.GetPicture());
 
-            var handler = new RegisterCommandHandler(
-                _userRepositoryMock.Object,
-                _unitOfWorkMock.Object,
-                _jwtTokenGeneratorMock.Object,
-                _createImageMock.Object);
-
             SetupMock(isEmailUnique: true, isUsernameUnique: true);
 
             // Act
-            ErrorOr<AuthenticationResult> result = await handler.Handle(command, default);
+            var result = await _handler.Handle(command, default);
 
             // Assert
-            _userRepositoryMock.Verify(x => 
-                x.AddUserAsync(It.Is<User>( u => u.Username == result.Value.Username), 
+            _userRepositoryMock.Verify(x =>
+                x.AddUserAsync(It.Is<User>(u => u.Username == result.Value.user.Username),
                 It.IsAny<CancellationToken>()),
                 Times.Once);
         }
@@ -129,16 +115,10 @@ namespace ActvShare.Application.Test.Authentication.Commands
             // Arrange
             var command = new RegisterCommand("Test User", "tester", "example@test.com", "Test1234!", "Test1234!", PictureMock.GetPicture());
 
-            var handler = new RegisterCommandHandler(
-                _userRepositoryMock.Object,
-                _unitOfWorkMock.Object,
-                _jwtTokenGeneratorMock.Object,
-                _createImageMock.Object);
-
             SetupMock(isEmailUnique: false, isUsernameUnique: true);
 
             // Act
-            ErrorOr<AuthenticationResult> result = await handler.Handle(command, default);
+            var result = await _handler.Handle(command, default);
 
             // Assert
             _unitOfWorkMock.Verify(x =>
@@ -168,6 +148,10 @@ namespace ActvShare.Application.Test.Authentication.Commands
             _jwtTokenGeneratorMock.Setup(
                 x => x.GenerateToken(
                     It.IsAny<User>()))
+                .Returns("test");
+
+            _refreshTokenGeneratorMock.Setup(
+                x => x.GenerateRefreshToken())
                 .Returns("test");
         }
     }

@@ -1,4 +1,5 @@
-﻿using ActvShare.WebApi.Common;
+﻿using ActvShare.OptionsSetup;
+using ActvShare.WebApi.Common;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Serilog;
 
@@ -17,7 +18,10 @@ namespace ActvShare.WebApi
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
             services.AddSingleton<ProblemDetailsFactory, ActvShareProblemDetailsFactorys>();
+            services.AddCors();
             
+            builder.Services.ConfigureOptions<SwaggerGenOptionsSetup>();
+            builder.Services.ConfigureOptions<CoresOptionsSetup>();
             return services;
         }
     }

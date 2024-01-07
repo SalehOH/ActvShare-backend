@@ -6,16 +6,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ActvShare.Infrastructure.Persistence;
 
-public class ApplicationContext: DbContext
+public class ApplicationContext : DbContext
 {
     public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
     {
     }
-    
+
     public DbSet<User> Users { get; set; } = null!;
     public DbSet<Chat> Chats { get; set; } = null!;
     public DbSet<Post> Posts { get; set; } = null!;
-    
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
@@ -23,6 +23,4 @@ public class ApplicationContext: DbContext
             .ApplyConfigurationsFromAssembly(typeof(ApplicationContext).Assembly);
         base.OnModelCreating(modelBuilder);
     }
-    
-    
 }

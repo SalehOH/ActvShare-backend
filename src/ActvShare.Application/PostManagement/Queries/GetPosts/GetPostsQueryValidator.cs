@@ -7,11 +7,10 @@ using FluentValidation;
 
 namespace ActvShare.Application.PostManagement.Queries.GetPosts
 {
-    public class GetPostsQueryValidator: AbstractValidator<GetPostsQuery>
+    public class GetPostsQueryValidator : AbstractValidator<GetPostsQuery>
     {
-        public GetPostsQueryValidator()
-        {
-            RuleFor(x => x.UserId).NotEmpty();
+        public GetPostsQueryValidator(){
+
         }
     }
 }

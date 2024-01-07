@@ -4,5 +4,5 @@ using MediatR;
 
 namespace ActvShare.Application.PostManagement.Queries.GetPost
 {
-    public record GetPostQuery(Guid PostId): IRequest<ErrorOr<PostWithRepliesResponse>>;
+    public record GetPostQuery(Guid PostId, Guid? UserId): IRequest<ErrorOr<PostWithRepliesResponse>>;
 }

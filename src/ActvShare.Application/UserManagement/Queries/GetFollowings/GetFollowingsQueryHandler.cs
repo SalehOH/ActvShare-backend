@@ -10,10 +10,13 @@ namespace ActvShare.Application.UserManagement.Queries.GetFollowings
     public class GetFollowingsQueryHandler : IRequestHandler<GetFollowingsQuery, ErrorOr<List<FollowResponse>>>
     {
         private readonly IUserRepository _userRepository;
+        private readonly IChatRepository _chatRepository;
 
-        public GetFollowingsQueryHandler(IUserRepository userRepository)
+        public GetFollowingsQueryHandler(IUserRepository userRepository, IChatRepository chatRepository)
         {
             _userRepository = userRepository;
+            _chatRepository = chatRepository;
+            
         }
 
         public async Task<ErrorOr<List<FollowResponse>>> Handle(GetFollowingsQuery request, CancellationToken cancellationToken)
@@ -33,7 +36,8 @@ namespace ActvShare.Application.UserManagement.Queries.GetFollowings
             var followResponses = await Task.WhenAll(followings.Select(async following =>
             {
                 var followingUser = await _userRepository.GetUserByIdAsync(following.FollowedUserId, cancellationToken);
-                return new FollowResponse(followingUser!.Name, followingUser.Username, followingUser.ProfileImage.StoredFileName);
+                var hasChat = await _chatRepository.ChatExistsAsync(UserId.Create(user.Id.Value), UserId.Create(followingUser!.Id.Value), cancellationToken);
+                return new FollowResponse(followingUser!.Name, followingUser.Username, followingUser.ProfileImage.StoredFileName, hasChat);
             }));
 
             

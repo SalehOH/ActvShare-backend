@@ -9,6 +9,6 @@ using MediatR;
 
 namespace ActvShare.Application.ChatManagement.Queries.GetChat
 {
-    public sealed record GetChatQuery(Guid ChatId) : IRequest<ErrorOr<List<MessageResponse>>> ;
+    public sealed record GetChatQuery(Guid ChatId, Guid user) : IRequest<ErrorOr<ChatResponse>> ;
    
 }

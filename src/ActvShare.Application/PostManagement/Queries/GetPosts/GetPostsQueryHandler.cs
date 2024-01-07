@@ -21,8 +21,8 @@ namespace ActvShare.Application.PostManagement.Queries.GetPosts
         public async Task<ErrorOr<List<PostResponse>>> Handle(GetPostsQuery request, CancellationToken cancellationToken)
         {
             var posts = await _postRepository.GetAllPostsAsync(cancellationToken);
-            
-            if ( posts.Any() is not true )
+
+            if (posts.Any() is not true)
                 return Errors.Post.PostNotFound;
 
             var userIds = posts.Select(post => post.UserId).Distinct().ToList();
@@ -31,17 +31,19 @@ namespace ActvShare.Application.PostManagement.Queries.GetPosts
             var postResponses = posts.Select(post =>
             {
                 var postCreator = users.FirstOrDefault(user => user.Id == post.UserId);
-                
+
                 var createrResponse = new UserResponse(
                     postCreator!.Name,
                     postCreator.Username,
                     postCreator.ProfileImage.StoredFileName);
-
+                
+                var isPostLiked = request.UserId.HasValue? post.Likes.Any(like => like.UserId?.Value == request.UserId.Value): false;
                 return new PostResponse(
                     post.Id.Value,
                     post.Content,
-                    post.PostImage?.OriginalFileName,
+                    post.PostImage?.StoredFileName,
                     createrResponse,
+                    isPostLiked,
                     post.Likes.Count,
                     post.CreatedAt);
             }).ToList();

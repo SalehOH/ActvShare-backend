@@ -7,6 +7,7 @@ using ActvShare.Domain.Users;
 using ActvShare.Application.Authentication.Common;
 using ActvShare.Domain.Common.Errors;
 using ActvShare.Application.Test.Common;
+using ActvShare.Domain.Abstractions;
 
 namespace ActvShare.Application.Test.Authentication.Queries
 {
@@ -14,13 +15,19 @@ namespace ActvShare.Application.Test.Authentication.Queries
     {
         private readonly Mock<IUserRepository> _userRepositoryMock;
         private readonly Mock<IJwtTokenGenerator> _jwtTokenGeneratorMock;
+        private readonly Mock<IRefreshTokenGenerator> _refreshTokenGeneratorMock;
+        private readonly Mock<IUnitOfWork> _unitOfWorkMock;
+        private readonly LoginQueryHandler _handler;
 
         public LoginQueryHandlerTests()
         {
             _userRepositoryMock = new Mock<IUserRepository>();
             _jwtTokenGeneratorMock = new Mock<IJwtTokenGenerator>();
+            _refreshTokenGeneratorMock = new Mock<IRefreshTokenGenerator>();
+            _unitOfWorkMock = new Mock<IUnitOfWork>();
+            _handler = new LoginQueryHandler(_userRepositoryMock.Object, _jwtTokenGeneratorMock.Object, _refreshTokenGeneratorMock.Object, _unitOfWorkMock.Object);
         }
-        
+
         [Fact]
         public async Task Handle_Should_ReturnsAuthenticationResult_When_UserExistsAndCredentialsAreValid()
         {
@@ -30,17 +37,16 @@ namespace ActvShare.Application.Test.Authentication.Queries
             _userRepositoryMock.Setup(x => x.GetUserByUsernameAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(user);
 
-            var handler = new LoginQueryHandler(_userRepositoryMock.Object, _jwtTokenGeneratorMock.Object);
-            var query = new LoginQuery ("johndoe", "password123");
+            var query = new LoginQuery("johndoe", "password123");
 
             // Act
-            var result = await handler.Handle(query, CancellationToken.None);
+            var result = await _handler.Handle(query, CancellationToken.None);
 
             // Assert
             result.IsError.Should().BeFalse();
-            result.Value.Name.Should().Be(user.Name);
-            result.Value.Username.Should().Be(user.Username);
-            result.Value.Should().BeOfType<AuthenticationResult>();
+            result.Value.user.Name.Should().Be(user.Name);
+            result.Value.user.Username.Should().Be(user.Username);
+            result.Value.user.Should().BeOfType<AuthenticationResult>();
         }
 
         [Fact]
@@ -50,11 +56,10 @@ namespace ActvShare.Application.Test.Authentication.Queries
             _userRepositoryMock.Setup(x => x.GetUserByUsernameAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(default(User));
 
-            var handler = new LoginQueryHandler(_userRepositoryMock.Object, _jwtTokenGeneratorMock.Object);
-            var query = new LoginQuery ("johndoe", "password123");
+            var query = new LoginQuery("johndoe", "password123");
 
             // Act
-            var result = await handler.Handle(query, CancellationToken.None);
+            var result = await _handler.Handle(query, CancellationToken.None);
 
             // Assert
             result.IsError.Should().BeTrue();

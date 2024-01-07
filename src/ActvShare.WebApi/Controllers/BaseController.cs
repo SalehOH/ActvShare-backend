@@ -1,4 +1,5 @@
-﻿using ErrorOr;
+﻿using System.Security.Claims;
+using ErrorOr;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -10,6 +11,21 @@ namespace ActvShare.WebApi.Controllers
     [ApiController]
     public class BaseController : ControllerBase
     {
+        protected Guid GetAuthenticatedUserId()
+        {
+            var userIdClaim = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
+            return Guid.Parse(userIdClaim!.Value);
+        }
+
+        protected bool isAuthenticated()
+        {
+            var userIdClaim = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
+            if (userIdClaim != null)
+                return true;
+            
+            return false;
+        }
+
         protected IActionResult Problem(List<Error> errors)
         {
             if (errors.Count is 0)

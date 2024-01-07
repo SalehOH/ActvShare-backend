@@ -36,7 +36,7 @@ namespace ActvShare.Application.PostManagement.Commands.CreateReply
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return new ReplyResponse(reply.Id.Value, reply.Content, new UserResponse(user.Name, user.Username, user.ProfileImage.OriginalFileName), reply.CreatedAt);
+            return new ReplyResponse(reply.Id.Value, reply.Content, new UserResponse(user.Name, user.Username, user.ProfileImage.StoredFileName), reply.CreatedAt);
         }
     }
 }

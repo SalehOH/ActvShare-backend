@@ -11,5 +11,6 @@ public interface IUserRepository
     Task<bool> IsUsernameUniqeAsync(string username, CancellationToken cancellationToken = default);
     Task<List<User>> GetUsersByIdsAsync(List<UserId> userIds, CancellationToken cancellationToken = default);
     Task<List<User>> GetSearchedUserAsync(string usernames, CancellationToken cancellationToken = default);
+    Task<User?> GetUserByRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken = default);
     Task AddUserAsync(User user, CancellationToken cancellationToken = default);
 }

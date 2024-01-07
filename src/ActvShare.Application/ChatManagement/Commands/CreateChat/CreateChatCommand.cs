@@ -8,7 +8,5 @@ using MediatR;
 
 namespace ActvShare.Application.ChatManagement.Commands.CreateChat
 {
-    public sealed record CreateChatCommand(Guid UserId, Guid OtherUserId): IRequest<ErrorOr<bool>>
-    {
-    }
+    public sealed record CreateChatCommand(Guid UserId, string OtherUser): IRequest<ErrorOr<bool>>;
 }

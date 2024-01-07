@@ -14,22 +14,24 @@ namespace ActvShare.Application.Test.ChatManagement.Commands;
 public class CreateMessageCommandHandlerTests
 {
     private readonly Mock<IChatRepository> _chatRepositoryMock;
+    private readonly Mock<IUserRepository> _userRepositoryMock;
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
     private readonly CreateMessageCommandHandler _handler;
 
     public CreateMessageCommandHandlerTests()
     {
         _chatRepositoryMock = new Mock<IChatRepository>();
+        _userRepositoryMock = new Mock<IUserRepository>();
         _unitOfWorkMock = new Mock<IUnitOfWork>();
-        _handler = new CreateMessageCommandHandler(_chatRepositoryMock.Object, _unitOfWorkMock.Object);
+        _handler = new CreateMessageCommandHandler(_chatRepositoryMock.Object, _userRepositoryMock.Object, _unitOfWorkMock.Object);
     }
 
     [Fact]
     public async Task Handle_Should_ReturnChatNotFoundError_When_ChatNotFound()
     {
         // Arrange
-        var command = new CreateMessageCommand(ChatId.CreateUnique().Value, UserId.CreateUnique().Value,  "Hello");
-        
+        var command = new CreateMessageCommand(ChatId.CreateUnique().Value, UserId.CreateUnique().Value, "Hello");
+
         _chatRepositoryMock.Setup(
             x => x.GetChatByIdAsync(It.IsAny<ChatId>(), It.IsAny<CancellationToken>()))
                   .ReturnsAsync(default(Chat));
@@ -50,12 +52,15 @@ public class CreateMessageCommandHandlerTests
         var userId = UserId.Create(user.Id.Value);
         var chat = Chat.Create(userId, userId);
 
-        var command = new CreateMessageCommand(chat.Id.Value, userId.Value,  "Hello");
+        var command = new CreateMessageCommand(chat.Id.Value, userId.Value, "Hello");
 
         _chatRepositoryMock.Setup(
             x => x.GetChatByIdAsync(It.IsAny<ChatId>(), It.IsAny<CancellationToken>()))
                   .ReturnsAsync(chat);
-
+        
+        _userRepositoryMock.Setup(
+            x => x.GetUserByIdAsync(It.IsAny<UserId>(), It.IsAny<CancellationToken>()))
+                  .ReturnsAsync(user);
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
 
@@ -64,6 +69,6 @@ public class CreateMessageCommandHandlerTests
         result.Value.Should().NotBeNull();
         result.Value.Should().BeOfType<MessageResponse>();
         result.Value.Content.Should().Be(command.Content);
-        result.Value.SenderId.Should().Be(command.SenderId);
+        result.Value.Sender.Should().Be(user.Username);
     }
 }

@@ -1,12 +1,11 @@
 using ActvShare.Domain.Users;
-using ActvShare.Domain.Users.Entities;
 using ActvShare.Domain.Users.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ActvShare.Infrastructure.Persistence.Configurations;
 
-public class UserConfiguration: IEntityTypeConfiguration<User>
+public class UserConfiguration : IEntityTypeConfiguration<User>
 {
     public void Configure(EntityTypeBuilder<User> builder)
     {
@@ -32,14 +31,30 @@ public class UserConfiguration: IEntityTypeConfiguration<User>
             .Property(u => u.Name)
             .HasMaxLength(50);
 
+        // Add these lines
+        builder
+            .Property(u => u.Username);
+
+        builder
+            .Property(u => u.Email);
+
+        builder
+            .Property(u => u.Password);
+
+
+        builder
+            .Property(u => u.RefreshToken);
+
+
+
         builder.OwnsOne(u => u.ProfileImage, profileBuilder =>
             {
                 profileBuilder.ToTable("ProfileImages");
-                
+
                 profileBuilder.WithOwner().HasForeignKey("UserId");
-                
+
                 profileBuilder.HasKey("Id", "UserId");
-                
+
                 profileBuilder
                     .Property(pi => pi.Id)
                     .ValueGeneratedNever()
@@ -47,18 +62,10 @@ public class UserConfiguration: IEntityTypeConfiguration<User>
                         id => id.Value,
                         value => ProfileImageId.Create(value));
             });
-        
 
-        builder
-            .Property(u => u.Email)
-            .HasMaxLength(150);
-
-        builder.Property(u => u.Password);
-
-        builder.Property(u => u.RefreshToken);
     }
-    
-    private void ConfigureFollowsTable(EntityTypeBuilder<User>  builder)
+
+    private void ConfigureFollowsTable(EntityTypeBuilder<User> builder)
     {
         builder.OwnsMany(u => u.Follows, followBuilder =>
         {
@@ -84,7 +91,7 @@ public class UserConfiguration: IEntityTypeConfiguration<User>
                     id => id.Value,
                     value => UserId.Create(value));
         });
-        
+
         builder.Metadata.FindNavigation(nameof(User.Follows))!
             .SetPropertyAccessMode(PropertyAccessMode.Field);
     }
@@ -107,11 +114,11 @@ public class UserConfiguration: IEntityTypeConfiguration<User>
                 .HasConversion(
                     id => id.Value,
                     value => NotificationId.Create(value));
-            
+
             notificationBuilder
                 .Property(n => n.Message)
                 .HasMaxLength(100);
-           
+
             notificationBuilder
                 .Property(n => n.IsRead);
 

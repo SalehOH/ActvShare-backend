@@ -1,6 +1,7 @@
 ﻿using ActvShare.Application.Common.Interfaces.Persistance;
 using ActvShare.Domain.Posts;
 using ActvShare.Domain.Posts.ValueObjects;
+using ActvShare.Domain.Users.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
 namespace ActvShare.Infrastructure.Persistence.Repositories
@@ -27,6 +28,11 @@ namespace ActvShare.Infrastructure.Persistence.Repositories
         public async Task<Post?> GetPostByIdAsync(PostId postId, CancellationToken cancellationToken = default)
         {
             return await _context.Posts.FirstOrDefaultAsync(p => p.Id == postId, cancellationToken);
+        }
+
+        public async Task<List<Post>> GetPostsByUserAsync(UserId userId, CancellationToken cancellationToken = default)
+        {
+            return await _context.Posts.Where(p => p.UserId == userId).ToListAsync(cancellationToken);
         }
     }
 }

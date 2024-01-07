@@ -28,12 +28,12 @@ public class CreatePostCommandHandlerTests
         _userRepositoryMock = new Mock<IUserRepository>();
         _unitOfWorkMock = new Mock<IUnitOfWork>();
         _createImageMock = new Mock<ICreateImage>();
-        
+
         _handler = new CreatePostCommandHandler(
             _postRepositoryMock.Object,
-             _userRepositoryMock.Object, 
-             _unitOfWorkMock.Object, 
-             _createImageMock.Object
+            _userRepositoryMock.Object,
+            _unitOfWorkMock.Object,
+            _createImageMock.Object
         );
     }
 
@@ -43,10 +43,10 @@ public class CreatePostCommandHandlerTests
         // Arrange
         var img = PictureMock.GetPicture();
         var command = new CreatePostCommand(UserId.CreateUnique().Value, "Hello", img);
-        
+
         _userRepositoryMock.Setup(
             x => x.GetUserByIdAsync(It.IsAny<UserId>(), It.IsAny<CancellationToken>()))
-                  .ReturnsAsync(default (User));
+                  .ReturnsAsync(default(User));
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -67,7 +67,7 @@ public class CreatePostCommandHandlerTests
         _userRepositoryMock.Setup(
             x => x.GetUserByIdAsync(It.IsAny<UserId>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(user);
-        
+
         _postRepositoryMock.Setup(
             x => x.AddPostAsync(It.IsAny<Post>(), It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
@@ -86,6 +86,6 @@ public class CreatePostCommandHandlerTests
         result.Value.UserResponse.Should().NotBeNull();
         result.Value.UserResponse.Should().BeOfType<UserResponse>();
         result.Value.UserResponse.Username.Should().Be(user.Username);
-        result.Value.ContentPicture.Should().Be(command.ContentPicture.FileName);
+        result.Value.ContentPicture.Should().Be(command.ContentPicture?.FileName);
     }
 }

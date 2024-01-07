@@ -7,8 +7,6 @@ using ActvShare.Application.UserManagement.Responses;
 using ErrorOr;
 using MediatR;
 
-namespace ActvShare.Application.UserManagement.Queries.GetSearchUser
-{
-    public record GetSearchUserQuery(string SerachUsername) : IRequest<ErrorOr<List<SearchUserResponse>>>;
-    
-}
+namespace ActvShare.Application.UserManagement.Queries.GetSearchUser;
+
+public record GetSearchUserQuery(Guid? userId, string SerachUsername) : IRequest<ErrorOr<List<SearchUserResponse>>>;
